@@ -43,6 +43,7 @@ class ChartPresenter {
                 currency: currency,
                 selectedIndicator: selectedIndicators,
                 coin: launchMode.coin,
+                isFavorite: interactor.isFavorite(coinCode: launchMode.coinCode),
                 priceAlert: alert,
                 alertsOn: interactor.alertsOn)
 
@@ -104,6 +105,14 @@ extension ChartPresenter: IChartViewDelegate {
         router.openAlertSettings(coin: coin)
     }
 
+    func onTapAddFavorite() {
+        interactor.addFavorite(coinCode: launchMode.coinCode)
+    }
+
+    func onTapRemoveFavorite() {
+        interactor.removeFavorite(coinCode: launchMode.coinCode)
+    }
+
 }
 
 extension ChartPresenter: IChartInteractorDelegate {
@@ -131,6 +140,10 @@ extension ChartPresenter: IChartInteractorDelegate {
             $0.coin.code == launchMode.coinCode
         }
 
+        updateChart()
+    }
+
+    func didUpdateFavorite() {
         updateChart()
     }
 

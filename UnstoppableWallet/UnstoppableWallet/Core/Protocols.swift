@@ -37,7 +37,7 @@ protocol ILocalStorage: class {
     var pushToken: String? { get set }
     var pushNotificationsOn: Bool { get set }
     var defaultMarketCategory: Int? { get set }
-    var marketFavoriteCoins: [String] { get set }
+    var marketFavoriteCoins: [MarketFavoritesManager.FavoriteCoin] { get set }
 }
 
 protocol ILogRecordManager {

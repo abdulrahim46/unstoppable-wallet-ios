@@ -38,6 +38,7 @@ class App {
     let currencyKit: ICurrencyKit
 
     let rateManager: IRateManager & IPostsManager
+    let marketFavoritesManager: MarketFavoritesManager
 
     let feeCoinProvider: IFeeCoinProvider
     let feeRateProviderFactory: FeeRateProviderFactory
@@ -132,6 +133,7 @@ class App {
         feeRateProviderFactory = FeeRateProviderFactory(appConfigProvider: appConfigProvider)
 
         rateManager = RateManager(walletManager: walletManager, currencyKit: currencyKit, rateCoinMapper: RateCoinMapper(), feeCoinProvider: feeCoinProvider, coinMarketCapApiKey: appConfigProvider.coinMarketCapApiKey, cryptoCompareApiKey: appConfigProvider.cryptoCompareApiKey, uniswapSubgraphUrl: appConfigProvider.uniswapSubgraphUrl)
+        marketFavoritesManager = MarketFavoritesManager(localStorage: localStorage)
 
         sortTypeManager = SortTypeManager(localStorage: localStorage)
 

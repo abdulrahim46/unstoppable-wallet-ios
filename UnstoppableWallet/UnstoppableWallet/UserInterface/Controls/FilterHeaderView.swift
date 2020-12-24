@@ -39,6 +39,7 @@ class FilterHeaderView: UIView {
         collectionView.allowsMultipleSelection = false
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.scrollsToTop = false
 
         collectionView.registerCell(forClass: FilterHeaderCell.self)
     }

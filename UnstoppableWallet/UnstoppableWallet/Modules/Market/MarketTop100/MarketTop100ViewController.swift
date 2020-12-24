@@ -10,7 +10,7 @@ class MarketTop100ViewController: ThemeViewController {
     private let tableView = SectionsTableView(style: .plain)
 
     private let marketMetricsCell: MarketMetricsCell
-    private let marketTopView = MarketTopModule.view()
+    private let marketTopView = MarketListModule.topView()
 
     init(viewModel: MarketTop100ViewModel) {
         self.viewModel = viewModel
@@ -24,6 +24,17 @@ class MarketTop100ViewController: ThemeViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        tableView.scrollsToTop = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        tableView.scrollsToTop = false
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

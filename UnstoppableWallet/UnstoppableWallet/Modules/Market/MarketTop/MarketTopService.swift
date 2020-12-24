@@ -8,7 +8,7 @@ class MarketTopService {
     private let disposeBag = DisposeBag()
     private var topItemsDisposable: Disposable?
 
-    private let rateManager: IRateManager
+    private let dataSource: IMarketListDataSource
     private let currencyKit: ICurrencyKit
 
     private var fullItems = [TopMarket]()
@@ -22,8 +22,8 @@ class MarketTopService {
         }
     }
 
-    init(rateManager: IRateManager, currencyKit: ICurrencyKit) {
-        self.rateManager = rateManager
+    init(dataSource: IMarketListDataSource, currencyKit: ICurrencyKit) {
+        self.dataSource = dataSource
         self.currencyKit = currencyKit
 
         fetchTopItems()
@@ -35,7 +35,7 @@ class MarketTopService {
 
         stateRelay.accept(.loading)
 
-        topItemsDisposable = rateManager.topMarketInfos(currencyCode: currencyKit.baseCurrency.code)
+        topItemsDisposable = dataSource.list(currencyCode: currencyKit.baseCurrency.code)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] in self?.sync(topMarkets: $0) })
 

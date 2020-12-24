@@ -167,7 +167,7 @@ class ChartViewController: ThemeViewController {
 
     private func updateViews(viewItem: ChartViewItem) {
         currentRateView.bind(rate: viewItem.currentRate, diff: nil)
-        updateAlertBarItem(alertMode: viewItem.priceAlertMode)
+        updateBarItems(isFavorite: viewItem.isFavorite, alertMode: viewItem.priceAlertMode)
 
         if let marketViewItem = viewItem.marketInfoStatus.data {
             chartInfoView.bind(marketCap: marketViewItem.marketCap, volume: marketViewItem.volume, supply: marketViewItem.supply, maxSupply: marketViewItem.maxSupply, startDate: marketViewItem.startDate, website: marketViewItem.website, onTapLink: { [weak self] in
@@ -226,21 +226,36 @@ class ChartViewController: ThemeViewController {
         }
     }
 
-    private func updateAlertBarItem(alertMode: ChartPriceAlertMode) {
+    private func updateBarItems(isFavorite: Bool, alertMode: ChartPriceAlertMode) {
+        var items = [UIBarButtonItem]()
+
+        let favoriteImage = UIImage(named: "rate_24")?.tinted(with: isFavorite ? .themeJacob : .themeGray)?.withRenderingMode(.alwaysOriginal)
+        items.append(UIBarButtonItem(image: favoriteImage, style: .plain, target: self, action: isFavorite ? #selector(onRemoveFavoriteTap) : #selector(onAddFavoriteTap)))
+
         switch alertMode {
         case .on:
             let image = UIImage(named: "bell_ring_24")?.tinted(with: .themeJacob)?.withRenderingMode(.alwaysOriginal)
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onAlertTap))
+            items.append(UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onAlertTap)))
         case .off:
             let image = UIImage(named: "bell_24")?.tinted(with: .themeGray)?.withRenderingMode(.alwaysOriginal)
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(onAlertTap))
-        case .hidden:
-            navigationItem.rightBarButtonItem = nil
+            items.append(UIBarButtonItem(image: image, style: .done, target: self, action: #selector(onAlertTap)))
+        default:
+            ()
         }
+
+        navigationItem.rightBarButtonItems = items
     }
 
     @objc private func onAlertTap() {
         delegate.onTapAlert()
+    }
+
+    @objc private func onAddFavoriteTap() {
+        delegate.onTapAddFavorite()
+    }
+
+    @objc private func onRemoveFavoriteTap() {
+        delegate.onTapRemoveFavorite()
     }
 
 }

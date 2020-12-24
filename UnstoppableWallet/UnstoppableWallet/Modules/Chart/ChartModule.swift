@@ -66,11 +66,17 @@ protocol IChartViewDelegate {
     func onTapLink()
 
     func onTapAlert()
+    func onTapAddFavorite()
+    func onTapRemoveFavorite()
 }
 
 protocol IChartInteractor {
     var defaultChartType: ChartType? { get set }
     var alertsOn: Bool { get }
+
+    func isFavorite(coinCode: String) -> Bool
+    func removeFavorite(coinCode: String)
+    func addFavorite(coinCode: String)
 
     func chartInfo(coinCode: CoinCode, currencyCode: String, chartType: ChartType) -> ChartInfo?
     func subscribeToChartInfo(coinCode: CoinCode, currencyCode: String, chartType: ChartType)
@@ -86,10 +92,11 @@ protocol IChartInteractorDelegate: class {
     func didReceive(marketInfo: MarketInfo)
     func onChartInfoError(error: Error)
     func didUpdate(alerts: [PriceAlert])
+    func didUpdateFavorite()
 }
 
 protocol IChartRateFactory {
-    func chartViewItem(chartDataStatus: DataStatus<ChartInfo>, marketInfoStatus: DataStatus<MarketInfo>, chartType: ChartType, coinCode: String, currency: Currency, selectedIndicator: ChartIndicatorSet, coin: Coin?, priceAlert: PriceAlert?, alertsOn: Bool) -> ChartViewItem
+    func chartViewItem(chartDataStatus: DataStatus<ChartInfo>, marketInfoStatus: DataStatus<MarketInfo>, chartType: ChartType, coinCode: String, currency: Currency, selectedIndicator: ChartIndicatorSet, coin: Coin?, isFavorite: Bool, priceAlert: PriceAlert?, alertsOn: Bool) -> ChartViewItem
     func selectedPointViewItem(chartItem: ChartItem, type: ChartType, currency: Currency, macdSelected: Bool) -> SelectedPointViewItem?
 }
 
@@ -186,6 +193,7 @@ struct ChartViewItem {
 
     let selectedIndicator: ChartIndicatorSet
 
+    let isFavorite: Bool
     let priceAlertMode: ChartPriceAlertMode
 }
 

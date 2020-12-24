@@ -8,6 +8,12 @@ class MarketTopView {
     private let viewModel: MarketTopViewModel
     var openController: ((UIViewController) -> ())?
 
+    private let isLoadingRelay = BehaviorRelay<Bool>(value: false)
+    private var isLoading: Bool = false
+
+    private let errorRelay = BehaviorRelay<String?>(value: nil)
+    private var error: String?
+
     private let sectionUpdatedRelay = PublishRelay<()>()
     private var viewItems = [MarketTopViewModel.ViewItem]()
 
@@ -22,6 +28,8 @@ class MarketTopView {
         headerView.set(periodAction: { [weak self] in self?.onTapPeriod() })
 
         subscribe(disposeBag, viewModel.viewItemsDriver) { [weak self] in self?.sync(viewItems: $0) }
+        subscribe(disposeBag, viewModel.isLoadingDriver) { [weak self] in self?.isLoadingRelay.accept($0) }
+        subscribe(disposeBag, viewModel.errorDriver) { [weak self] in self?.errorRelay.accept($0) }
     }
 
     private func onTapSortingField() {
@@ -102,6 +110,14 @@ class MarketTopView {
 }
 
 extension MarketTopView {
+
+    var isLoadingDriver: Driver<Bool> {
+        isLoadingRelay.asDriver()
+    }
+
+    var errorDriver: Driver<String?> {
+        errorRelay.asDriver()
+    }
 
     public var sectionUpdatedSignal: Signal<()> {
         sectionUpdatedRelay.asSignal()

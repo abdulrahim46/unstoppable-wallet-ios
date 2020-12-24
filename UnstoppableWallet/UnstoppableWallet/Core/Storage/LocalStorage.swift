@@ -190,9 +190,13 @@ extension LocalStorage: ILocalStorage {
         set { storage.set(value: newValue, for: keyDefaultMarketCategory) }
     }
 
-    var marketFavoriteCoins: [String] {
-        get { storage.value(for: keyMarketFavoriteCoins) ?? [] }
-        set { storage.set(value: newValue, for: keyMarketFavoriteCoins) }
+    var marketFavoriteCoins: [MarketFavoritesManager.FavoriteCoin] {
+        get {
+            let coinCodes: [String] = storage.value(for: keyMarketFavoriteCoins) ?? []
+            return coinCodes.map { MarketFavoritesManager.FavoriteCoin(code: $0) } }
+        set {
+            storage.set(value: newValue.map { $0.code }, for: keyMarketFavoriteCoins)
+        }
     }
 
 }

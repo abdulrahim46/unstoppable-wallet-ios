@@ -6,7 +6,7 @@ import HUD
 import RxSwift
 import RxCocoa
 
-class MarketViewController: ThemeSearchViewController {
+class MarketViewController: ThemeViewController {
     private let disposeBag = DisposeBag()
 
     private let viewModel: MarketViewModel
@@ -15,12 +15,7 @@ class MarketViewController: ThemeSearchViewController {
     private var viewControllers = [UIViewController]()
 
     private let categoriesHeaderView: MarketCategoriesView
-    private let syncSpinner = HUDProgressView(
-            strokeLineWidth: 2,
-            radius: 9,
-            strokeColor: .themeGray,
-            duration: 2
-    )
+    private let loadingSpinner = HUDActivityView.create(with: .medium24)
 
     init(viewModel: MarketViewModel) {
         self.viewModel = viewModel
@@ -29,13 +24,23 @@ class MarketViewController: ThemeSearchViewController {
 
         super.init()
 
+        let holder = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        holder.addSubview(loadingSpinner)
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: holder)
+
         title = "market.title".localized
         tabBarItem = UITabBarItem(title: "market.tab_bar_item".localized, image: UIImage(named: "market_2_24"), tag: 0)
 
-        let router = LockScreenRouter(appStart: false)
+        let marketTop100 = MarketTop100Module.view(service: MarketTop100Service())
 
-        viewControllers.append(MarketTop100Module.view(service: MarketTop100Service()))
-        viewControllers.append(MarketWatchlistModule.view(service: MarketWatchlistService()))
+        let marketFavorites = MarketFavoritesModule.view(service: MarketFavoritesService())
+        subscribe(disposeBag, marketFavorites.isLoadingDriver) { [weak self] in self?.sync(index: 1, loading: $0) }
+
+        viewControllers = [
+            marketTop100,
+            marketFavorites
+        ]
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -67,6 +72,16 @@ class MarketViewController: ThemeSearchViewController {
 
     private func syncPageViewController() {
         pageViewController.setViewControllers([viewControllers[viewModel.currentCategoryIndex]], direction: .forward, animated: false)
+    }
+
+    private func sync(index: Int, loading: Bool) {
+        // todo: when change controller with loading to other, we need set new loading state
+        loadingSpinner.isHidden = !loading
+        if loading {
+            loadingSpinner.startAnimating()
+        } else {
+            loadingSpinner.stopAnimating()
+        }
     }
 
 }

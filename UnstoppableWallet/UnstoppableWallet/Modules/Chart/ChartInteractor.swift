@@ -13,13 +13,15 @@ class ChartInteractor {
     private let currentDateProvider: ICurrentDateProvider
     private let priceAlertManager: IPriceAlertManager
     private let localStorage: ILocalStorage
+    private let favoritesManager: MarketFavoritesManager
 
-    init(rateManager: IRateManager, chartTypeStorage: IChartTypeStorage, currentDateProvider: ICurrentDateProvider, priceAlertManager: IPriceAlertManager, localStorage: ILocalStorage) {
+    init(rateManager: IRateManager, chartTypeStorage: IChartTypeStorage, currentDateProvider: ICurrentDateProvider, priceAlertManager: IPriceAlertManager, localStorage: ILocalStorage, favoritesManager: MarketFavoritesManager) {
         self.rateManager = rateManager
         self.chartTypeStorage = chartTypeStorage
         self.currentDateProvider = currentDateProvider
         self.priceAlertManager = priceAlertManager
         self.localStorage = localStorage
+        self.favoritesManager = favoritesManager
     }
 
 }
@@ -76,6 +78,22 @@ extension ChartInteractor: IChartInteractor {
         }
 
         return priceAlertManager.priceAlert(coin: coin)
+    }
+
+    func isFavorite(coinCode: String) -> Bool {
+        favoritesManager.isFavorite(coinCode: coinCode)
+    }
+
+    func addFavorite(coinCode: String) {
+        favoritesManager.add(coinCode: coinCode)
+
+        delegate?.didUpdateFavorite()
+    }
+
+    func removeFavorite(coinCode: String) {
+        favoritesManager.remove(coinCode: coinCode)
+
+        delegate?.didUpdateFavorite()
     }
 
     func subscribeToAlertUpdates() {

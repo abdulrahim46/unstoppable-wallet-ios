@@ -200,7 +200,7 @@ class ChartRateFactory: IChartRateFactory {
                 trends: trends, minValue: minRateString, maxValue: maxRateString, timeline: timeline)
     }
 
-    func chartViewItem(chartDataStatus: DataStatus<ChartInfo>, marketInfoStatus: DataStatus<MarketInfo>, chartType: ChartType, coinCode: String, currency: Currency, selectedIndicator: ChartIndicatorSet, coin: Coin?, priceAlert: PriceAlert?, alertsOn: Bool) -> ChartViewItem {
+    func chartViewItem(chartDataStatus: DataStatus<ChartInfo>, marketInfoStatus: DataStatus<MarketInfo>, chartType: ChartType, coinCode: String, currency: Currency, selectedIndicator: ChartIndicatorSet, coin: Coin?, isFavorite: Bool, priceAlert: PriceAlert?, alertsOn: Bool) -> ChartViewItem {
         let chartDataStatusViewItem: DataStatus<ChartDataViewItem> = chartDataStatus.map {
             convert(chartInfo: $0, marketInfo: marketInfoStatus.data, chartType: chartType, currency: currency)
         }
@@ -222,7 +222,7 @@ class ChartRateFactory: IChartRateFactory {
             priceAlertMode = priceAlert?.changeState != .off || priceAlert?.trendState != .off ? .on : .off
         }
 
-        return ChartViewItem(currentRate: currentRate, chartDataStatus: chartDataStatusViewItem, marketInfoStatus: marketStatus, selectedIndicator: selectedIndicator, priceAlertMode: priceAlertMode)
+        return ChartViewItem(currentRate: currentRate, chartDataStatus: chartDataStatusViewItem, marketInfoStatus: marketStatus, selectedIndicator: selectedIndicator, isFavorite: isFavorite, priceAlertMode: priceAlertMode)
     }
 
     func selectedPointViewItem(chartItem: ChartItem, type: ChartType, currency: Currency, macdSelected: Bool) -> SelectedPointViewItem? {

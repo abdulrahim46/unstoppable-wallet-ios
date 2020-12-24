@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class MarketWatchlistService {
+class MarketFavoritesService {
     private let disposeBag = DisposeBag()
 
     init() {
@@ -10,5 +10,5 @@ class MarketWatchlistService {
 
 }
 
-extension MarketWatchlistService {
+extension MarketFavoritesService {
 }
